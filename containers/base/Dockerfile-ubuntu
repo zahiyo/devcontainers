@@ -1,0 +1,40 @@
+FROM ubuntu:18.04
+
+LABEL zahiyo.devcontainer.base.version="0.1"
+
+ARG USER=dev
+ARG USER_UID=1000
+ARG USER_GID=${USER_UID}
+ARG WORKDIR=/workspace
+ARG P10K_CONFIG=https://raw.githubusercontent.com/zahiyo/devcontainers/master/tools/oh-my-zsh/.p10k.zsh
+
+# Temporary installation directory
+ENV BASE_INSTALL /tmp/base-devcont-install
+
+RUN apt-get update && apt-get -y install \
+        curl \
+        git \
+        nano \
+        sudo \
+        zsh \
+    && addgroup --gid ${USER_GID} ${USER} \
+    && adduser \
+        --disabled-password \
+        --home ${WORKDIR} \
+        --ingroup ${USER} \
+        --shell /bin/zsh \
+        --uid ${USER_UID} \
+        ${USER} \
+    && echo "${USER}  ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+USER ${USER}
+
+WORKDIR ${WORKDIR}
+
+RUN curl -fsSL https://raw.githubusercontent.com/zahiyo/devcontainers/master/tools/oh-my-zsh/install.sh -o - \
+    | zsh -s ${P10K_CONFIG}
+
+COPY entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD ["/bin/zsh"]
