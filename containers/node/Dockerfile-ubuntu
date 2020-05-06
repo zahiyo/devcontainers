@@ -1,0 +1,9 @@
+FROM zahiyo/devcontainer-base:ubuntu
+
+LABEL zahiyo.devcontainer.nodejs.version="0.1"
+
+ENV NODE_ENV "development"
+
+# Installing Node.js 12
+RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - \
+    && sudo apt-get install -y nodejs
