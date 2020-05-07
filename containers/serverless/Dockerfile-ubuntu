@@ -5,7 +5,10 @@ RUN apt-get update && apt-get -y install \
         gpg \
         unzip
 
-RUN curl -fsSL https://raw.githubusercontent.com/zahiyo/devcontainers/master/tools/aws-cli/install.sh -o - | bash
+COPY aws-cli.public_key .
+
+RUN curl -fsSL https://raw.githubusercontent.com/zahiyo/devcontainers/master/tools/aws-cli/install.sh -o - \
+    | bash -s aws-cli.public_key
 
 # Serverless requires Node.js CLI
 FROM zahiyo/devcontainer-node:ubuntu
