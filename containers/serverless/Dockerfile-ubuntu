@@ -1,0 +1,29 @@
+FROM ubuntu:latest AS installer
+
+RUN apt-get update && apt-get -y install \
+        curl \
+        gpg \
+        unzip
+
+RUN curl -fsSL https://raw.githubusercontent.com/zahiyo/devcontainers/master/tools/aws-cli/install.sh -o - | bash
+
+# Serverless requires Node.js CLI
+FROM zahiyo/devcontainer-node:ubuntu
+
+LABEL zahiyo.devcontainer.serverless.version="0.1"
+
+# Installing the Serverless Framework
+RUN sudo npm install -g serverless
+
+# Copying AWS CLI binaries from installer
+COPY --from=installer /usr/local/aws-cli/ /usr/local/aws-cli/
+COPY --from=installer /aws-cli-bin/ /usr/local/bin/
+
+# Installing aws-vault from 99designs
+RUN sudo curl -L -o /usr/local/bin/aws-vault https://github.com/99designs/aws-vault/releases/download/v5.4.0/aws-vault-linux-amd64 \
+    && sudo chmod +x /usr/local/bin/aws-vault
+
+COPY entrypoint.sh /serverless-entrypoint.sh
+
+ENTRYPOINT [ "/serverless-entrypoint.sh" ]
+CMD ["/bin/zsh"]

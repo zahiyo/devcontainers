@@ -35,7 +35,7 @@ help: ## Show this help
 	@echo 'Targets:'
 	@egrep '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\t%-20s %s\n", $$1, $$2}'
 	@echo 'Args:'
-	@printf "\t%-20s %s\n" 'TYPE' "Type of container (default value: 'base'). Possible values: [base, node]"
+	@printf "\t%-20s %s\n" 'TYPE' "Type of container (default value: 'base'). Possible values: [base, node, serverless]"
 	@printf "\t%-20s %s\n" 'TAG' "Version of the container (default value: 'ubuntu'). Possible values: [alpine, ubuntu]"
 	@printf "\t%-20s %s\n" 'OPTIONS' "Any docker options for the executed command"
 
