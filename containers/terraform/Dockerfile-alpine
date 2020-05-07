@@ -25,3 +25,5 @@ RUN apk add --no-cache openssh
 COPY --from=installer ["/bin/terraform", "/bin/terraform"]
 
 USER dev
+
+RUN terraform -install-autocomplete
