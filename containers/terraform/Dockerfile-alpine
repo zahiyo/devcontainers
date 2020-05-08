@@ -9,7 +9,7 @@ RUN apk add --no-cache \
         openssh \
         unzip
 
-COPY terraform.public_key .
+COPY public-keys .
 
 RUN curl -fsSL https://raw.githubusercontent.com/zahiyo/devcontainers/master/tools/terraform/install.sh -o - \
     | sh -s ${TERRAFORM_VERSION} terraform.public_key
@@ -18,12 +18,8 @@ FROM zahiyo/devcontainer-base:alpine
 
 LABEL zahiyo.devcontainer.terraform.version="0.1"
 
-USER root
-
-RUN apk add --no-cache openssh
+RUN sudo apk add --no-cache openssh
 
 COPY --from=installer ["/bin/terraform", "/bin/terraform"]
-
-USER dev
 
 RUN terraform -install-autocomplete
