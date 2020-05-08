@@ -22,7 +22,7 @@ gpg --verify terraform_checksums.sig terraform_checksums
 
 # Verify the zip file matches the expected checksum
 grep linux_amd64 terraform_checksums >terraform_linux_amd64_checksum
-sha256sum -cs terraform_linux_amd64_checksum
+sha256sum -c terraform_linux_amd64_checksum
 
 # Extract the zip file
 unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /bin

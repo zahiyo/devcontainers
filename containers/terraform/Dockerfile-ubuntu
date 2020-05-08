@@ -1,0 +1,34 @@
+FROM ubuntu:18.04 as installer
+
+ARG TERRAFORM_VERSION=0.12.24
+
+RUN apt-get update && apt-get -y install \
+        curl \
+        git \
+        gnupg \
+        gpg \
+        openssh-client \
+        unzip
+
+COPY public-keys .
+
+RUN curl -fsSL https://raw.githubusercontent.com/zahiyo/devcontainers/master/tools/terraform/install.sh -o - \
+    | sh -s ${TERRAFORM_VERSION} terraform.public_key
+
+RUN curl -fsSL https://raw.githubusercontent.com/zahiyo/devcontainers/master/tools/aws-cli/install.sh -o - \
+    | bash -s aws-cli.public_key
+
+FROM zahiyo/devcontainer-base:ubuntu
+
+LABEL zahiyo.devcontainer.terraform.version="0.1"
+
+RUN sudo apt-get -y install openssh-client
+
+# Copying Terraform binaries
+COPY --from=installer ["/bin/terraform", "/bin/terraform"]
+
+# Copying AWS CLI binaries from installer
+COPY --from=installer ["/usr/local/aws-cli/", "/usr/local/aws-cli/"]
+COPY --from=installer ["/aws-cli-bin/", "/usr/local/bin/"]
+
+RUN terraform -install-autocomplete
