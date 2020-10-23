@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 set -e
 
@@ -8,7 +8,7 @@ P10K_CONFIG_URI=$1
 curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o - | zsh
 
 # Import the powerlevel10k configuration
-[ -n "${P10K_CONFIG_URI}" ] && curl -fsSL -o .p10k.zsh ${P10K_CONFIG_URI}
+[ -n "${P10K_CONFIG_URI}" ] && curl -fsSL -o $HOME/.p10k.zsh ${P10K_CONFIG_URI}
 
 # Install powerlevel10k theme
 ZSH_CUSTOM_THEMES=~/.oh-my-zsh/custom/themes
@@ -23,11 +23,3 @@ source \"${ZSH_CUSTOM_THEMES}/powerlevel10k/powerlevel10k.zsh-theme\"
 
 # Disable zsh theme
 sed -i s/^ZSH_THEME=".*"/ZSH_THEME=""/ ~/.zshrc
-
-# Free up drive space
-cd ${ZSH_CUSTOM_THEMES}/powerlevel10k/
-rm -rf .git .gitignore .gitattributes config
-
-# Remove all gitstatusd that are not for Linux x64
-cd gitstatus/bin
-find . ! -name 'gitstatusd-linux-x86_64' -type f -exec rm -f {} +
